@@ -6,6 +6,7 @@ const multer = require('multer');
 const logger = require('morgan');
 const serveIndex = require('serve-index')
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
 
 // view engine setup
@@ -19,10 +20,12 @@ var storage = multer.diskStorage({
         cb(null, './public/images')
     },
     filename: (req, file, cb) => {
-        if(path.extname(file.originalname)==".png")
-            cb(null, file.fieldname + '-'+file.originalname)
+        if(path.extname(file.originalname)==".png"){ 
+            cb(null, file.fieldname + '-'+file.originalname)}
         else
-            cb(new Error('Only png are allowed'));
+           { 
+               cb(new Error('Only png are allowed'));
+            }
     }
 });
 
@@ -35,6 +38,7 @@ app.use(logger('tiny'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(cors());
 //app.use(express.static('public'));
 app.use('/ftp', express.static('public'), serveIndex('public', {'icons': true}));
 
@@ -48,7 +52,6 @@ app.get('/avatar', function(req,res) {
 
 app.post('/upload_profile_picture', function(req,res) {
     upload(req,res,(err)=> {
-        
         res.send(err)});
 })
 module.exports = app;
