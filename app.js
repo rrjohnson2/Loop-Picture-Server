@@ -15,7 +15,7 @@ app.set('view engine', 'jade');
 
 
 
-var storage = multer.diskStorage({
+var profile_picture_storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, './public/images')
     },
@@ -30,7 +30,8 @@ var storage = multer.diskStorage({
 });
 
 //will be using this for uplading
-const upload = multer({ storage: storage }).single('avatar');
+const profile_picture = multer({ storage: profile_picture_storage }).single('avatar');
+// const bit_content = multer({ storage: storage }).single('content');
 
 
 
@@ -51,7 +52,7 @@ app.get('/avatar', function(req,res) {
 })
 
 app.post('/upload_profile_picture', function(req,res) {
-    upload(req,res,(err)=> {
+    profile_picture(req,res,(err)=> {
         res.send(err)});
 })
 module.exports = app;
