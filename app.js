@@ -70,6 +70,10 @@ app.get('/avatar', function(req,res) {
     var user = req.param("user");
     res.sendFile(path.join(`${__dirname}/public/images/avatar-${user}.png`));
 })
+app.get('/test', function(req,res) {
+    var user = req.param("user");
+    res.sendFile(path.join(`${__dirname}/public/content/GjohsonFriMay082020162904GMT0400EasternDaylightTime.mp3`));
+})
 
 app.post('/upload_profile_picture', function(req,res) {
     profile_picture(req,res,(err)=> {
