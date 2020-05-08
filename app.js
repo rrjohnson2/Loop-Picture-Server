@@ -29,9 +29,29 @@ var profile_picture_storage = multer.diskStorage({
     }
 });
 
+var bit_storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './public/content')
+    },
+    filename: (req, file, cb) => {
+        console.log(file);
+        if(path.extname(file.originalname)==".mp3"||
+          path.extname(file.originalname)==".png" ||
+          path.extname(file.originalname)==".jpg" ||
+          path.extname(file.originalname)==".mp4"
+          ){
+            console.log("here"); 
+            cb(null,file.originalname)}
+        else
+           { 
+               cb(new Error('Only audio video and images are allowed'));
+            }
+    }
+});
+
 //will be using this for uplading
 const profile_picture = multer({ storage: profile_picture_storage }).single('avatar');
-// const bit_content = multer({ storage: storage }).single('content');
+const bit_content = multer({ storage: bit_storage }).single('content');
 
 
 
@@ -53,6 +73,11 @@ app.get('/avatar', function(req,res) {
 
 app.post('/upload_profile_picture', function(req,res) {
     profile_picture(req,res,(err)=> {
+        res.send(err)});
+})
+
+app.post('/upload_content', function(req,res) {
+    bit_content(req,res,(err)=> {
         res.send(err)});
 })
 module.exports = app;
