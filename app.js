@@ -70,9 +70,9 @@ app.get('/avatar', function(req,res) {
     var user = req.param("user");
     res.sendFile(path.join(`${__dirname}/public/images/avatar-${user}.png`));
 })
-app.get('/test', function(req,res) {
-    var user = req.param("user");
-    res.sendFile(path.join(`${__dirname}/public/content/GjohsonFriMay082020162904GMT0400EasternDaylightTime.mp3`));
+app.get('/content', function(req,res) {
+    var content = req.param("content");
+    res.sendFile(path.join(`${__dirname}/public/content/${content}`));
 })
 
 app.post('/upload_profile_picture', function(req,res) {
