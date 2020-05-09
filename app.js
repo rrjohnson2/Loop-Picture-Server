@@ -21,7 +21,7 @@ var profile_picture_storage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         if(path.extname(file.originalname)==".png"){ 
-            cb(null, file.fieldname + '-'+file.originalname)}
+            cb(null,file.originalname)}
         else
            { 
                cb(new Error('Only png are allowed'));
@@ -68,7 +68,7 @@ app.get('/', function(req,res) {
 })
 app.get('/avatar', function(req,res) {
     var user = req.param("user");
-    res.sendFile(path.join(`${__dirname}/public/images/avatar-${user}.png`));
+    res.sendFile(path.join(`${__dirname}/public/images/${user}`));
 })
 app.get('/content', function(req,res) {
     var content = req.param("content");
