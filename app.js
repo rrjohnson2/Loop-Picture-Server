@@ -47,7 +47,7 @@ app.get('/avatar', function(req,res) {
         Key:    req.param("user"),
         Bucket: bucket,
     }
-    s3.getObject(getParams, function(err, data) {
+    s3.getObject(params, function(err, data) {
         if (err){
           return res.status(400).send({success:false,err:err});
         }
