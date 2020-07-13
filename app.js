@@ -50,7 +50,11 @@ app.get('/avatar', function(req,res) {
 
     s3.getObject(params, function put(err, data) {
         if (err) res.send(err);
-        else res.sendFile(data.Body);
+        else {
+            console.log(data);
+            res.sendFile(data.Body);
+        }
+
       });
     res.send();
 })
