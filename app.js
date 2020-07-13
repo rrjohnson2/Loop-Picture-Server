@@ -52,6 +52,7 @@ app.get('/avatar', function(req,res) {
     async function stream ()
     {
         s3.getObject(params).createReadStream().pipe(file);
+        console.log(file);
         return 1;
     }
     stream().then(res.sendFile(file));
