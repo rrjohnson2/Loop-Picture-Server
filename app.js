@@ -47,7 +47,14 @@ app.get('/avatar', function(req,res) {
         Key:    req.param("user"),
         Bucket: bucket,
     }
-       res.redirect(s3.getSignedUrl(params));
+    s3.getObject(getParams, function(err, data) {
+        if (err){
+          return res.status(400).send({success:false,err:err});
+        }
+        else{
+          return res.send(data.Body);
+        }
+      });
 })
 
 app.post('/upload_profile_picture', function(req,res) {
