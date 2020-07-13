@@ -1,13 +1,3 @@
-process.env.AWS_ACCESS_KEY_ID     = process.env.BUCKETEER_AWS_ACCESS_KEY_ID || "AKIAX7CRDYXPX2XWPYE2";
-process.env.AWS_SECRET_ACCESS_KEY = process.env.BUCKETEER_AWS_SECRET_ACCESS_KEY || "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";
-process.env.AWS_REGION            = 'us-east-1';
-
-const AWS = require('aws-sdk');
-const s3  = new AWS.S3({
-    accessKeyId: process.env.BUCKETEER_AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.BUCKETEER_AWS_SECRET_ACCESS_KEY,
-    region: 'us-east-1',
-  });
 
 const express = require('express');
 const app = express();
@@ -17,25 +7,50 @@ const logger = require('morgan');
 const serveIndex = require('serve-index')
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+process.env.AWS_ACCESS_KEY_ID     = process.env.BUCKETEER_AWS_ACCESS_KEY_ID;
+process.env.AWS_SECRET_ACCESS_KEY = process.env.BUCKETEER_AWS_SECRET_ACCESS_KEY;
+process.env.AWS_REGION            = 'us-east-1';
+const bucket = process.env.BUCKETEER_BUCKET_NAME || 'bucketeer-3083ee67-78d6-4380-9db8-660a511fb8e3'
+
+const AWS = require('aws-sdk');
+const s3  = new AWS.S3();
+
 
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
- 
+
 
 
 var profile_picture_storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, './public/images')
     },
+    
     filename: (req, file, cb) => {
-        if(path.extname(file.originalname)==".png"){ 
-            cb(null,file.originalname)}
-        else
-           { 
-               cb(new Error('Only png are allowed'));
+
+        var params={
+            Key:    file.originalname,
+            Bucket: bucket,
+            Body:   new Buffer(file),
+        }
+        s3.putObject(params, function put(err, data) {
+            if (err) {
+              console.log(err, err.stack);
+              return;
+            } else {
+              console.log(data);
             }
+          
+            delete params.Body;
+            s3.getObject(params, function put(err, data) {
+              if (err) console.log(err, err.stack);
+              else     console.log(data);
+          
+              console.log(data.Body.toString());
+            });
+          });
     }
 });
 
@@ -94,28 +109,4 @@ app.post('/upload_content', function(req,res) {
     bit_content(req,res,(err)=> {
         res.send(err)});
 })
-
-
-var params = {
-    Key:    'hello',
-    Bucket: process.env.BUCKETEER_BUCKET_NAME,
-    Body:   new Buffer('Hello, node.js'),
-  };
-  
-  s3.putObject(params, function put(err, data) {
-    if (err) {
-      console.log(err, err.stack);
-      return;
-    } else {
-      console.log(data);
-    }
-  
-    delete params.Body;
-    s3.getObject(params, function put(err, data) {
-      if (err) console.log(err, err.stack);
-      else     console.log(data);
-  
-      console.log(data.Body.toString());
-    });
-  });
 module.exports = app;
