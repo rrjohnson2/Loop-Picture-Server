@@ -52,6 +52,7 @@ app.get('/avatar', function(req,res) {
         if (err) res.send(err);
         else res.sendFile(data);
       });
+    res.send();
 })
 
 app.post('/upload_profile_picture', function(req,res) {
