@@ -41,9 +41,22 @@ app.use('/ftp', express.static('public'), serveIndex('public', {'icons': true}))
 app.get('/', function(req,res) {
     return res.send("hello from my app express server!")
 })
-app.get('/avatar', function(req,res) {
-    var content = req.param("content");
-    res.sendFile(path.join(`${__dirname}/public/content/${content}`));
+app.get('/avatar', function(req,res) { 
+
+    var params={
+        Key:    req.param("user"),
+        Bucket: bucket,
+    }
+    var file = {};
+
+    s3.getObject(params, function put(err, data) {
+        if (err) console.log(err, err.stack);
+        else     console.log(data);
+    
+        console.log(data);
+      });
+    
+    res.sendFile(file);
 })
 
 app.post('/upload_profile_picture', function(req,res) {
@@ -55,11 +68,11 @@ app.post('/upload_profile_picture', function(req,res) {
     s3.putObject(params, function put(err, data) {
         if (err) {
           console.log(err, err.stack);
-          res.send("bad")
+          res.send(err);
           return;
         } else {
           console.log(data);
-          res.send("good")
+          res.send();
         }
       });
 })
