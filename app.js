@@ -47,15 +47,7 @@ app.get('/avatar', function(req,res) {
         Key:    req.param("user"),
         Bucket: bucket,
     }
-    var file = require('fs').createWriteStream('file.jpg');
-
-    async function stream ()
-    {
-        s3.getObject(params).createReadStream().pipe(file);
-        console.log(file);
-        return 1;
-    }
-    stream().then(res.sendFile(file));
+       res.redirect(s3.getSignedUrl(params));
 })
 
 app.post('/upload_profile_picture', function(req,res) {
