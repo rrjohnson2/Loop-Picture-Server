@@ -47,16 +47,11 @@ app.get('/avatar', function(req,res) {
         Key:    req.param("user"),
         Bucket: bucket,
     }
-    var file = {};
 
     s3.getObject(params, function put(err, data) {
-        if (err) console.log(err, err.stack);
-        else     console.log(data);
-    
-        console.log(data);
+        if (err) res.send(err);
+        else res.sendFile(data);
       });
-    
-    res.sendFile(file);
 })
 
 app.post('/upload_profile_picture', function(req,res) {
