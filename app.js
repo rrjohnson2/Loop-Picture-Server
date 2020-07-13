@@ -22,7 +22,7 @@ const cors = require('cors');
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
+ 
 
 
 var profile_picture_storage = multer.diskStorage({
