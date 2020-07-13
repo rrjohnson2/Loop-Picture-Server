@@ -49,15 +49,12 @@ app.get('/avatar', function(req,res) {
     }
     var file = require('fs').createWriteStream('file.jpg');
 
-    s3.getObject(params, function put(err, data) {
-        if (err) res.send(err);
-        else {
-            console.log(data);
-            res.sendFile(data.Body.toString('utf-8'));
-        }
-
-      });
-    res.send();
+    async function stream ()
+    {
+        s3.getObject(params).createReadStream().pipe(file);
+        return 1;
+    }
+    stream().then(res.sendFile(file));
 })
 
 app.post('/upload_profile_picture', function(req,res) {
