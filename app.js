@@ -47,12 +47,13 @@ app.get('/avatar', function(req,res) {
         Key:    req.param("user"),
         Bucket: bucket,
     }
+    var file = require('fs').createWriteStream('file.jpg');
 
     s3.getObject(params, function put(err, data) {
         if (err) res.send(err);
         else {
             console.log(data);
-            res.send(data);
+            res.sendFile(data.Body.toString('utf-8'));
         }
 
       });
