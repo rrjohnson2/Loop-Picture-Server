@@ -46,7 +46,7 @@ app.get('/download', function(req,res) {
         }
         else{
           return res.send(data.Body);
-        }
+        } 
       });
 });
 
