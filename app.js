@@ -48,7 +48,7 @@ app.get('/download', function(req,res) {
           return res.send(data.Body);
         }
       });
-})
+});
 
 app.post('/upload', function(req,res) {
     var params={
