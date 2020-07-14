@@ -31,29 +31,6 @@ app.use(cors());
 //app.use(express.static('public'));
 app.use('/ftp', express.static('public'), serveIndex('public', {'icons': true}));
 
-var s3_storage = multer.diskStorage({
-    filename: (req, file, cb) => {
-        var params={
-            Key:    req.files.content.name,
-            Bucket: bucket,
-            Body:   req.files.content.data,
-        }
-        s3.putObject(params, function put(err, data) {
-            if (err) {
-              console.log(err, err.stack);
-              res.send(err);
-              return;
-            } else {
-              console.log(data);
-              res.send();
-            }
-          });
-    }
-});
-
-//will be using this for uplading
-const s3_storage_handle = multer({ storage: s3_storage }).single('content');
-
 app.get('/', function(req,res) {
     return res.send("hello from my app express server!")
 })
@@ -74,8 +51,20 @@ app.get('/download', function(req,res) {
 });
 
 app.post('/upload', function(req,res) {
-
-    s3_storage_handle(req,res,(err)=> {
-        res.send(err)});
+    var params={
+        Key:    req.files.content.name,
+        Bucket: bucket,
+        Body:   req.files.content.data,
+    }
+    s3.putObject(params, function put(err, data) {
+        if (err) {
+          console.log(err, err.stack);
+          res.send(err);
+          return;
+        } else {
+          console.log(data);
+          res.send();
+        }
+      });
 })
 module.exports = app;
