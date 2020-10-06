@@ -6,6 +6,7 @@ const multer = require('multer');
 const logger = require('morgan');
 const serveIndex = require('serve-index')
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const fileupload = require("express-fileupload");
@@ -17,6 +18,12 @@ const bucket = process.env.BUCKETEER_BUCKET_NAME || 'bucketeer-3083ee67-78d6-438
 
 const AWS = require('aws-sdk');
 const s3  = new AWS.S3();
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }))
+ 
+// parse application/json
+app.use(bodyParser.json())
 
 app.use(fileupload());
 // view engine setup
@@ -34,10 +41,10 @@ app.use('/ftp', express.static('public'), serveIndex('public', {'icons': true}))
 app.get('/', function(req,res) {
     return res.send("hello from my app express server!")
 })
-app.get('/download', function(req,res) { 
+app.get('/avatar', function(req,res) { 
 
     var params={
-        Key:    req.param("content"),
+        Key:    req.param("user"),
         Bucket: bucket,
     }
     s3.getObject(params, function(err, data) {
@@ -50,11 +57,11 @@ app.get('/download', function(req,res) {
       });
 });
 
-app.post('/upload', function(req,res) {
+app.post('/upload_profile_picture', function(req,res) {
     var params={
-        Key:    req.files.content.name,
+        Key:    req.files.avatar.name,
         Bucket: bucket,
-        Body:   req.files.content.data,
+        Body:   req.files.avatar.data,
     }
     s3.putObject(params, function put(err, data) {
         if (err) {
