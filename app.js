@@ -15,20 +15,6 @@ app.set('view engine', 'jade');
 
 
 
-var profile_picture_storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, './public/images')
-    },
-    filename: (req, file, cb) => {
-        if(path.extname(file.originalname)==".png"){ 
-            cb(null, file.fieldname + '-'+file.originalname)}
-        else
-           { 
-               cb(new Error('Only png are allowed'));
-            }
-    }
-});
-
 var bit_storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, './public/content')
@@ -50,7 +36,6 @@ var bit_storage = multer.diskStorage({
 });
 
 //will be using this for uplading
-const profile_picture = multer({ storage: profile_picture_storage }).single('avatar');
 const bit_content = multer({ storage: bit_storage }).single('content');
 
 
@@ -65,23 +50,16 @@ app.use('/ftp', express.static('public'), serveIndex('public', {'icons': true}))
 
 app.get('/', function(req,res) {
     return res.send("hello from my app express server!")
-})
-app.get('/avatar', function(req,res) {
-    var user = req.param("user");
-    res.sendFile(path.join(`${__dirname}/public/images/avatar-${user}.png`));
-})
-app.get('/content', function(req,res) {
+});
+
+app.get('/download', function(req,res) {
     var content = req.param("content");
     res.sendFile(path.join(`${__dirname}/public/content/${content}`));
-})
+});
 
-app.post('/upload_profile_picture', function(req,res) {
-    profile_picture(req,res,(err)=> {
-        res.send(err)});
-})
-
-app.post('/upload_content', function(req,res) {
+app.post('/upload', function(req,res) {
     bit_content(req,res,(err)=> {
         res.send(err)});
-})
+});
+
 module.exports = app;
